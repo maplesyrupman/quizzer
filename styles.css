@@ -1,0 +1,5 @@
+#quizContainer {
+    display: inline-block;
+    min-width: 80%;
+    min-height: 80vh;
+}
