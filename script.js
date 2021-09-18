@@ -1,7 +1,3 @@
-let timerCount = 0;
-let userScore = 0;
-let questionNum = 1;
-
 let questions = [
     {
         question: 'what day is it',
@@ -28,12 +24,11 @@ let questions = [
         d: 'just enough'
     }
 ]
-let questionTotal = questions.length;
 
 const appContainer = document.getElementById('appContainer');
 const timerCountEl = document.getElementById('timer');
 
-const createQuestionCard = (questionObj) => {
+const createQuestionCard = (questionObj, questionNum, questionTotal) => {
     let cardEl = document.createElement('div');
     cardEl.classList.add('card');
     let cardHeaderEl = document.createElement('div');
@@ -98,12 +93,13 @@ const createQuestionCard = (questionObj) => {
 }
 
 const timer = (() => {
-    let timerClock;
+    let timerCount = 0;
+    let timerTick;
 
     const start = () => {
         timerCount = 60;
         timerCountEl.textContent = timerCount;
-        timerClock = setInterval(() => {
+        timerTick = setInterval(() => {
             if (timerCount > 0) {
                 timerCount--;
                 timerCountEl.textContent = timerCount;
@@ -111,21 +107,45 @@ const timer = (() => {
                     timerCountEl.classList.add('text-danger');
                 }
             } else {
-                clearInterval(timerClock);
+                clearInterval(timerTick);
                 timerCountEl.classList.remove('text-danger');
             }
-        }, 1100);
+        }, 1000);
     };
 
     const stop = () => {
-        clearInterval(timerClock);
+        clearInterval(timerTick);
         timerCount = 0;
         timerCountEl.textContent = timerCount;
+        if (timerCountEl.classList.contains('text-danger')) {
+            timerCountEl.classList.remove('text-danger');
+        }
+    }
+
+    const isTimeLeft = () => {
+        if (timerCount) {
+            return true;
+        }
+        return false;
+    }
+
+    const isPlusFiveLeft = () => {
+        if (timerCount > 5) {
+            return true;
+        }
+        return false;
+    }
+
+    const minusFive = () => {
+        timerCount = timerCount - 5;
     }
 
     return {
         start,
-        stop
+        stop, 
+        isTimeLeft, 
+        isPlusFiveLeft, 
+        minusFive,
     }
 })();
 
@@ -133,26 +153,46 @@ const timer = (() => {
 
 const quiz = (() => {
     let questions;
-    let continueQuiz;
+    let quizContinue; 
+    let currentQuestion = 0;
+    let questionNum = 1;
+    let userScore = 0;
+    let questionsTotal;
+
     
-    const setQuestions = (questions) => {
-        this.questions = questions;
+    const setQuestions = (someQuestions) => {
+        questions = someQuestions;
+        questionsTotal = questions.length;
     };
 
     const start = () => {
         timer.start();
+        userScore = 0;
 
-        continueQuiz = setInterval(() => {
-            if (timerCount <= 0 || questionNum == questionTotal) {
+        quizContinue = setInterval(() => {
+            if (!timer.isTimeLeft() || currentQuestion == questions.length) {
                 quiz.stop();
             }
-        }, 1000)
+        }, 1000);
+
+        askQuestion(questions[currentQuestion]);
 
     };
 
     const stop = () => {
+        debugger;
         timer.stop();
-        clearInterval(continueQuiz);
+        clearInterval(quizContinue);
+        currentQuestion = 0;
+        questionNum = 1;
+        appContainer.lastChild.remove();
+    }
+
+    const isLastQuestion = () => {
+        if (currentQuestion == questions.length -1) {
+            return true;
+        }
+        return false;
     }
 
     const askQuestion = (questionObj) => {
@@ -160,16 +200,46 @@ const quiz = (() => {
             appContainer.lastChild.remove();
         }
 
-        createQuestionCard(questionObj);
+        createQuestionCard(questionObj, questionNum, questionsTotal);
 
         let answerContainer = document.querySelector('.answerContainer')
-        console.log(answerContainer);
+        answerContainer.addEventListener('click', e => {
+            answer = e.target.value;
+            if (answer === questionObj.correctAnswer) {
+                userScore++;
+                if (isLastQuestion()) {
+                    console.log('last question');
+                    stop();
+                } else {
+                    currentQuestion++;
+                    questionNum++;
+                    askQuestion(questions[currentQuestion]);
+                }
+            } 
+
+            else {
+                if (timer.isPlusFiveLeft() && !isLastQuestion()) {
+                    timer.minusFive();
+                    currentQuestion++;
+                    askQuestion(questions[currentQuestion]);
+                } else {
+                    quiz.stop();
+                }
+            }
+        })
+    };
+
+    const getUserScore = () => {
+        return userScore;
     }
 
     return {
         setQuestions,
         start,
         stop, 
-        askQuestion
+        getUserScore,
     }
 })();
+
+quiz.setQuestions(questions);
+quiz.start();
