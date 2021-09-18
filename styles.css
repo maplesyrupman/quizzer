@@ -1,5 +1,17 @@
-#quizContainer {
+#appContainer {
     display: inline-block;
     min-width: 80%;
     min-height: 80vh;
 }
+
+.card-header {
+    text-align: center;
+}
+
+.answerContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+}
+
