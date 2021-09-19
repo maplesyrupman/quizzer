@@ -28,69 +28,125 @@ let questions = [
 const appContainer = document.getElementById('appContainer');
 const timerCountEl = document.getElementById('timer');
 
-const createQuestionCard = (questionObj, questionNum, questionTotal) => {
-    let cardEl = document.createElement('div');
-    cardEl.classList.add('card');
-    let cardHeaderEl = document.createElement('div');
-    cardHeaderEl.classList.add('card-header');
-    // placeholder until set array is created
-    cardHeaderEl.textContent = `${questionNum}/${questionTotal}`;
-    cardEl.appendChild(cardHeaderEl);
+const domOps = (() => {
+    const createQuestionCard = (questionObj, questionNum, questionTotal) => {
+        let cardEl = document.createElement('div');
+        cardEl.classList.add('card');
+        let cardHeaderEl = document.createElement('div');
+        cardHeaderEl.classList.add('card-header');
+        // placeholder until set array is created
+        cardHeaderEl.textContent = `${questionNum}/${questionTotal}`;
+        cardEl.appendChild(cardHeaderEl);
+    
+        cardBodyEl = document.createElement('div');
+        cardBodyEl.classList.add('card-body');
+    
+        let questionTextEl = document.createElement('p');
+        // placeholder until questionObj is created 
+        questionTextEl.textContent = questionObj.question;
+        cardBodyEl.appendChild(questionTextEl);
+    
+        let answerContainer = document.createElement('div');
+        answerContainer.classList.add('row');
+        answerContainer.classList.add('answerContainer');
+    
+        let answerA = document.createElement('button');
+        answerA.classList.add('btn');
+        answerA.classList.add('btn-primary');
+        answerA.classList.add('col-9');
+        // placeholder
+        answerA.textContent = `a) ${questionObj.a}`;
+        answerA.value = questionObj.a;
+        answerContainer.appendChild(answerA);
+    
+        let answerB = document.createElement('button');
+        answerB.classList.add('btn');
+        answerB.classList.add('btn-primary');
+        answerB.classList.add('col-9');
+        // placeholder
+        answerB.textContent = `b) ${questionObj.b}`;
+        answerB.value = questionObj.b;
+        answerContainer.appendChild(answerB);
+    
+        let answerC = document.createElement('button');
+        answerC.classList.add('btn');
+        answerC.classList.add('btn-primary');
+        answerC.classList.add('col-9');
+        // placeholder
+        answerC.textContent = `c) ${questionObj.c}`;
+        answerC.value = questionObj.c;
+        answerContainer.appendChild(answerC);
+    
+        let answerD = document.createElement('button');
+        answerD.classList.add('btn');
+        answerD.classList.add('btn-primary');
+        answerD.classList.add('col-9');
+        // placeholder
+        answerD.textContent = `d) ${questionObj.d}`;
+        answerD.value = questionObj.d;
+        answerContainer.appendChild(answerD);
+    
+        cardBodyEl.appendChild(answerContainer);
+        cardEl.appendChild(cardBodyEl);
+    
+        appContainer.appendChild(cardEl);
+    }
 
-    cardBodyEl = document.createElement('div');
-    cardBodyEl.classList.add('card-body');
+    const displayStartScreen = () => {
+        if (appContainer.hasChildNodes()) {
+            appContainer.lastChild.remove();
+        }
 
-    let questionTextEl = document.createElement('p');
-    // placeholder until questionObj is created 
-    questionTextEl.textContent = questionObj.question;
-    cardBodyEl.appendChild(questionTextEl);
+        let cardEl = document.createElement('div');
+        cardEl.classList.add('card');
+        // cardEl.setAttribute('style', 'width: 18rem;');
 
-    let answerContainer = document.createElement('div');
-    answerContainer.classList.add('row');
-    answerContainer.classList.add('answerContainer');
+        let cardBodyEl = document.createElement('div');
+        cardBodyEl.classList.add('card-body');
+        
+        let cardTitleEl = document.createElement('h5');
+        cardTitleEl.classList.add('card-title');
+        cardTitleEl.textContent = 'Welcome to Quizzer!';
+        cardBodyEl.appendChild(cardTitleEl);
 
-    let answerA = document.createElement('button');
-    answerA.classList.add('btn');
-    answerA.classList.add('btn-primary');
-    answerA.classList.add('col-9');
-    // placeholder
-    answerA.textContent = `a) ${questionObj.a}`;
-    answerA.value = questionObj.a;
-    answerContainer.appendChild(answerA);
+        let cardSubtitleEl = document.createElement('h6');
+        cardSubtitleEl.classList.add('card-subtitle');
+        cardSubtitleEl.classList.add('mb-2');
+        cardSubtitleEl.classList.add('text-muted');
+        cardSubtitleEl.textContent = 'Press start to begin your quiz';
+        cardBodyEl.appendChild(cardSubtitleEl);
 
-    let answerB = document.createElement('button');
-    answerB.classList.add('btn');
-    answerB.classList.add('btn-primary');
-    answerB.classList.add('col-9');
-    // placeholder
-    answerB.textContent = `b) ${questionObj.b}`;
-    answerB.value = questionObj.b;
-    answerContainer.appendChild(answerB);
+        let buttonContainerEl = document.createElement('div');
+        buttonContainerEl.classList.add('buttonContainer');
 
-    let answerC = document.createElement('button');
-    answerC.classList.add('btn');
-    answerC.classList.add('btn-primary');
-    answerC.classList.add('col-9');
-    // placeholder
-    answerC.textContent = `c) ${questionObj.c}`;
-    answerC.value = questionObj.c;
-    answerContainer.appendChild(answerC);
+        let startBtnEl = document.createElement('button');
+        startBtnEl.classList.add('btn');
+        startBtnEl.classList.add('btn-primary');
+        startBtnEl.textContent = 'Start';
+        buttonContainerEl.appendChild(startBtnEl);
 
-    let answerD = document.createElement('button');
-    answerD.classList.add('btn');
-    answerD.classList.add('btn-primary');
-    answerD.classList.add('col-9');
-    // placeholder
-    answerD.textContent = `d) ${questionObj.d}`;
-    answerD.value = questionObj.d;
-    answerContainer.appendChild(answerD);
+        let highScoreBtnEl = document.createElement('button');
+        highScoreBtnEl.classList.add('btn');
+        highScoreBtnEl.classList.add('btn-secondary');
+        highScoreBtnEl.textContent = 'High Scores';
+        buttonContainerEl.appendChild(highScoreBtnEl);
 
-    cardBodyEl.appendChild(answerContainer);
-    cardEl.appendChild(cardBodyEl);
+        buttonContainerEl.appendChild(startBtnEl);
+        buttonContainerEl.appendChild(highScoreBtnEl);
+        cardBodyEl.appendChild(buttonContainerEl);
+        cardEl.appendChild(cardBodyEl);
 
-    appContainer.appendChild(cardEl);
+        appContainer.appendChild(cardEl);
+    }
 
-}
+    return {
+        createQuestionCard,
+        displayStartScreen,
+    }
+
+})();
+
+
 
 const timer = (() => {
     let timerCount = 0;
@@ -200,7 +256,7 @@ const quiz = (() => {
             appContainer.lastChild.remove();
         }
 
-        createQuestionCard(questionObj, questionNum, questionsTotal);
+        domOps.createQuestionCard(questionObj, questionNum, questionsTotal);
 
         let answerContainer = document.querySelector('.answerContainer')
         answerContainer.addEventListener('click', e => {
@@ -241,5 +297,31 @@ const quiz = (() => {
     }
 })();
 
-quiz.setQuestions(questions);
-quiz.start();
+const highScores = (() => {
+    let highScores;
+
+    const getScores = () => {
+        if (localStorage.getItem('quizHighScores')) {
+            highScores = JSON.parse(localStorage.getItem('quizHighScores'));
+            return highScores;
+        }
+        highScores = [];
+    }
+
+    const addHighScore = (player, highScore) => {
+        highScores = getScores();
+        playerScore = [player, score];
+        highScores.push(playerScore);
+        localStorage.setItem('quizHighScores', JSON.stringify(playerScore));
+    }
+
+    return {
+        getScores,
+        addHighScore
+    }
+
+})();
+
+// quiz.setQuestions(questions);
+// quiz.start();
+domOps.displayStartScreen();
