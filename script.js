@@ -1,29 +1,45 @@
 let questions = [
     {
-        question: 'what day is it',
-        correctAnswer: 'Friday',
-        a: 'Friday',
-        b: 'Monday',
-        c: 'Tuesday',
-        d: 'Wednesday'
+        question: 'Which built-in method removes the last element from an array and returns that element?',
+        correctAnswer: 'pop()',
+        a: 'last()',
+        b: 'get()',
+        c: 'pop()',
+        d: 'None of the above.'
     },
     {
-        question: 'What time is it?',
-        correctAnswer: 'time to get a watch',
-        a: '1 o\'clock',
-        b: "midnight",
-        c: 'lunch time',
-        d: 'time to get a watch'
+        question: 'Which built-in method returns the calling string value converted to upper case?',
+        correctAnswer: 'toUpperCase()',
+        a: 'toUpperCase()',
+        b: "toUpper()",
+        c: 'changeCase(case)',
+        d: 'None of the above.'
     },
     {
-        question: 'How much wood would a wood chuck chuck if a woodchuck could chuck wood?',
-        correctAnswer: 'a lot', 
-        a: 'not a lot', 
-        b: 'a decent amount', 
-        c: 'a lot', 
-        d: 'just enough'
+        question: 'Which of the following function of String object causes a string to be italic, as if it were in an <i> tag?',
+        correctAnswer: 'italics()', 
+        a: 'fontColor()', 
+        b: 'fontSize()', 
+        c: 'fixed()', 
+        d: 'italics()'
+    },
+    {
+        question: 'Which of the following function of String object splits a String object into an array of strings by separating the string into substrings?',
+        correctAnswer: 'split()', 
+        a: 'slice()', 
+        b: 'replace()', 
+        c: 'split()', 
+        d: 'search()'
+    },
+    {
+        question: 'Which of the following function of String object creates a string to be displayed as bold as if it were in a <b> tag?',
+        correctAnswer: 'bold()', 
+        a: 'bold()', 
+        b: 'fontSize()', 
+        c: 'big()', 
+        d: 'italics()'
     }
-]
+];
 
 const appContainer = document.getElementById('appContainer');
 const timerCountEl = document.getElementById('timer');
@@ -130,6 +146,7 @@ const domOps = (() => {
         highScoreBtnEl.classList.add('btn');
         highScoreBtnEl.classList.add('btn-secondary');
         highScoreBtnEl.textContent = 'High Scores';
+        highScoreBtnEl.addEventListener('click', displayHighScores);
         buttonContainerEl.appendChild(highScoreBtnEl);
 
         buttonContainerEl.appendChild(startBtnEl);
@@ -224,6 +241,7 @@ const domOps = (() => {
 
         let cardTitleEl = document.createElement('h3');
         cardTitleEl.classList.add('card-title');
+        cardTitleEl.classList.add('text-center');
         cardTitleEl.textContent = 'High Scores';
         cardBodyEl.appendChild(cardTitleEl);
 
@@ -246,6 +264,17 @@ const domOps = (() => {
         highScoreCard.appendChild(highScoresList);
         cardBodyEl.appendChild(highScoreCard);
         cardEl.appendChild(cardBodyEl);
+
+        let clearBtn = document.createElement('button');
+        clearBtn.classList.add('btn');
+        clearBtn.classList.add('btn-danger');
+        clearBtn.classList.add('mb-1');
+        clearBtn.textContent = 'Clear Scores';
+        clearBtn.addEventListener('click', () => {
+            scoreStore.clearScores();
+            displayHighScores();
+        });
+        cardEl.appendChild(clearBtn);
 
         let homeBtn = document.createElement('button');
         homeBtn.classList.add('btn');
@@ -437,9 +466,14 @@ const scoreStore = (() => {
         localStorage.setItem('quizHighScores', JSON.stringify(highScores));
     }
 
+    const clearScores = () => {
+        localStorage.setItem('quizHighScores', JSON.stringify([]));
+    }
+
     return {
         getScores,
-        addHighScore
+        addHighScore,
+        clearScores
     }
 
 })();
