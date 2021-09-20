@@ -29,9 +29,11 @@ const appContainer = document.getElementById('appContainer');
 const timerCountEl = document.getElementById('timer');
 
 const domOps = (() => {
+
     const createQuestionCard = (questionObj, questionNum, questionTotal) => {
         let cardEl = document.createElement('div');
         cardEl.classList.add('card');
+        cardEl.classList.add('border-0');
         let cardHeaderEl = document.createElement('div');
         cardHeaderEl.classList.add('card-header');
         cardHeaderEl.textContent = `${questionNum}/${questionTotal}`;
@@ -93,6 +95,7 @@ const domOps = (() => {
 
         let cardEl = document.createElement('div');
         cardEl.classList.add('card');
+        cardEl.classList.add('border-0');
 
         let cardBodyEl = document.createElement('div');
         cardBodyEl.classList.add('card-body');
@@ -144,6 +147,7 @@ const domOps = (() => {
 
         let cardEl = document.createElement('div');
         cardEl.classList.add('card');
+        cardEl.classList.add('border-0');
 
         let cardBodyEl = document.createElement('div');
         cardBodyEl.classList.add('card-body');
@@ -188,7 +192,7 @@ const domOps = (() => {
         submitBtn.textContent = 'Submit';
         submitBtn.addEventListener('click', () => {
             let userInitials = initialsInputEl.value;
-            highScores.addHighScore(userInitials, userScore);
+            scoreStore.addHighScore(userInitials, userScore);
             displayHighScores();
         });
 
@@ -205,9 +209,54 @@ const domOps = (() => {
     }
 
     const displayHighScores = () => {
-        let highScores = highScores.getScores();
+        if (appContainer.hasChildNodes()) {
+            appContainer.lastChild.remove();
+        }
 
-        let 
+        let savedHighScores = scoreStore.getScores();
+
+        let cardEl = document.createElement('div');
+        cardEl.classList.add('card');
+        cardEl.classList.add('border-0');
+
+        let cardBodyEl = document.createElement('div');
+        cardBodyEl.classList.add('card-body');
+
+        let cardTitleEl = document.createElement('h3');
+        cardTitleEl.classList.add('card-title');
+        cardTitleEl.textContent = 'High Scores';
+        cardBodyEl.appendChild(cardTitleEl);
+
+        let highScoreCard = document.createElement('div');
+        highScoreCard.classList.add('card');
+        
+        let highScoresList = document.createElement('ul');
+        highScoreCard.classList.add('list-group');
+        highScoreCard.classList.add('list-group-flush');
+
+        for (let i = 0; i < savedHighScores.length; i++) {
+            let thisScore = savedHighScores[i];
+            
+            let scoreItem = document.createElement('li');
+            scoreItem.classList.add('list-group-item');
+            scoreItem.textContent = `${thisScore.player} ${thisScore.highScore}`;
+            highScoresList.appendChild(scoreItem);
+        };
+
+        highScoreCard.appendChild(highScoresList);
+        cardBodyEl.appendChild(highScoreCard);
+        cardEl.appendChild(cardBodyEl);
+
+        let homeBtn = document.createElement('button');
+        homeBtn.classList.add('btn');
+        homeBtn.classList.add('btn-primary');
+        homeBtn.textContent = 'Back';
+        homeBtn.addEventListener('click', () => {
+            displayStartScreen();
+        });
+        cardEl.appendChild(homeBtn);
+
+        appContainer.appendChild(cardEl);
     }
 
     return {
@@ -351,6 +400,7 @@ const quiz = (() => {
                 if (timer.isPlusFiveLeft() && !isLastQuestion()) {
                     timer.minusFive();
                     currentQuestion++;
+                    questionNum++;
                     askQuestion(questions[currentQuestion]);
                 } else {
                     quiz.stop();
@@ -371,22 +421,20 @@ const quiz = (() => {
     }
 })();
 
-const highScores = (() => {
-    let highScores;
+const scoreStore = (() => {
 
     const getScores = () => {
         if (localStorage.getItem('quizHighScores')) {
-            highScores = JSON.parse(localStorage.getItem('quizHighScores'));
-            return highScores;
+            return JSON.parse(localStorage.getItem('quizHighScores'));
         }
-        highScores = [];
+        return [];
     }
 
     const addHighScore = (player, highScore) => {
-        highScores = getScores();
-        playerScore = [player, score];
+        let highScores = getScores();
+        playerScore = {player, highScore};
         highScores.push(playerScore);
-        localStorage.setItem('quizHighScores', JSON.stringify(playerScore));
+        localStorage.setItem('quizHighScores', JSON.stringify(highScores));
     }
 
     return {
