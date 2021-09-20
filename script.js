@@ -34,7 +34,6 @@ const domOps = (() => {
         cardEl.classList.add('card');
         let cardHeaderEl = document.createElement('div');
         cardHeaderEl.classList.add('card-header');
-        // placeholder until set array is created
         cardHeaderEl.textContent = `${questionNum}/${questionTotal}`;
         cardEl.appendChild(cardHeaderEl);
     
@@ -42,7 +41,6 @@ const domOps = (() => {
         cardBodyEl.classList.add('card-body');
     
         let questionTextEl = document.createElement('p');
-        // placeholder until questionObj is created 
         questionTextEl.textContent = questionObj.question;
         cardBodyEl.appendChild(questionTextEl);
     
@@ -54,7 +52,6 @@ const domOps = (() => {
         answerA.classList.add('btn');
         answerA.classList.add('btn-primary');
         answerA.classList.add('col-9');
-        // placeholder
         answerA.textContent = `a) ${questionObj.a}`;
         answerA.value = questionObj.a;
         answerContainer.appendChild(answerA);
@@ -63,7 +60,6 @@ const domOps = (() => {
         answerB.classList.add('btn');
         answerB.classList.add('btn-primary');
         answerB.classList.add('col-9');
-        // placeholder
         answerB.textContent = `b) ${questionObj.b}`;
         answerB.value = questionObj.b;
         answerContainer.appendChild(answerB);
@@ -72,7 +68,6 @@ const domOps = (() => {
         answerC.classList.add('btn');
         answerC.classList.add('btn-primary');
         answerC.classList.add('col-9');
-        // placeholder
         answerC.textContent = `c) ${questionObj.c}`;
         answerC.value = questionObj.c;
         answerContainer.appendChild(answerC);
@@ -81,7 +76,6 @@ const domOps = (() => {
         answerD.classList.add('btn');
         answerD.classList.add('btn-primary');
         answerD.classList.add('col-9');
-        // placeholder
         answerD.textContent = `d) ${questionObj.d}`;
         answerD.value = questionObj.d;
         answerContainer.appendChild(answerD);
@@ -99,20 +93,21 @@ const domOps = (() => {
 
         let cardEl = document.createElement('div');
         cardEl.classList.add('card');
-        // cardEl.setAttribute('style', 'width: 18rem;');
 
         let cardBodyEl = document.createElement('div');
         cardBodyEl.classList.add('card-body');
         
-        let cardTitleEl = document.createElement('h5');
+        let cardTitleEl = document.createElement('h2');
         cardTitleEl.classList.add('card-title');
+        cardTitleEl.classList.add('text-center');
         cardTitleEl.textContent = 'Welcome to Quizzer!';
         cardBodyEl.appendChild(cardTitleEl);
 
-        let cardSubtitleEl = document.createElement('h6');
+        let cardSubtitleEl = document.createElement('h4');
         cardSubtitleEl.classList.add('card-subtitle');
         cardSubtitleEl.classList.add('mb-2');
         cardSubtitleEl.classList.add('text-muted');
+        cardSubtitleEl.classList.add('text-center');
         cardSubtitleEl.textContent = 'Press start to begin your quiz';
         cardBodyEl.appendChild(cardSubtitleEl);
 
@@ -123,6 +118,9 @@ const domOps = (() => {
         startBtnEl.classList.add('btn');
         startBtnEl.classList.add('btn-primary');
         startBtnEl.textContent = 'Start';
+        startBtnEl.addEventListener('click', () => {
+            quiz.start();
+        });
         buttonContainerEl.appendChild(startBtnEl);
 
         let highScoreBtnEl = document.createElement('button');
@@ -139,9 +137,83 @@ const domOps = (() => {
         appContainer.appendChild(cardEl);
     }
 
+    const displayEndScreen = (userScore) => {
+        if (appContainer.hasChildNodes()) {
+            appContainer.lastChild.remove();
+        }
+
+        let cardEl = document.createElement('div');
+        cardEl.classList.add('card');
+
+        let cardBodyEl = document.createElement('div');
+        cardBodyEl.classList.add('card-body');
+        
+        let cardTitleEl = document.createElement('h2');
+        cardTitleEl.classList.add('card-title');
+        cardTitleEl.classList.add('text-center');
+        cardTitleEl.textContent = 'All Done!';
+        cardBodyEl.appendChild(cardTitleEl);
+
+        let cardSubtitleEl = document.createElement('h4');
+        cardSubtitleEl.classList.add('card-subtitle');
+        cardSubtitleEl.classList.add('mb-2');
+        cardSubtitleEl.classList.add('text-muted');
+        cardSubtitleEl.classList.add('text-center');
+        cardSubtitleEl.textContent = `You finished with a score of ${userScore}`;
+        cardBodyEl.appendChild(cardSubtitleEl);
+
+        let formContainerEl = document.createElement('div');
+        formContainerEl.classList.add('saveScoreForm');
+
+        let formMessage = document.createElement('h5');
+        formMessage.classList.add('text-center');
+        formMessage.textContent = 'Please enter your initials to save your high score';
+
+        let initialsFormContainer = document.createElement('div');
+        initialsFormContainer.classList.add('initialsFormDiv');
+
+        let initialsInputEl = document.createElement('input');
+        initialsInputEl.setAttribute('type', 'text');
+        initialsInputEl.setAttribute('placeHolder', 'W.W.');
+        initialsInputEl.setAttribute('id', 'initialsInput');
+
+        let initialsLableEl = document.createElement('label');
+        initialsLableEl.textContent = 'Your initials:';
+        initialsLableEl.setAttribute('for', 'initialsInput');
+
+        let submitBtn = document.createElement('button');
+        submitBtn.classList.add('btn');
+        submitBtn.classList.add('btn-primary');
+        submitBtn.classList.add('btn-sm');
+        submitBtn.textContent = 'Submit';
+        submitBtn.addEventListener('click', () => {
+            let userInitials = initialsInputEl.value;
+            highScores.addHighScore(userInitials, userScore);
+            displayHighScores();
+        });
+
+        formContainerEl.appendChild(formMessage);
+        initialsFormContainer.appendChild(initialsLableEl);
+        initialsFormContainer.appendChild(initialsInputEl);
+        initialsFormContainer.appendChild(submitBtn);
+        formContainerEl.appendChild(initialsFormContainer)
+        
+        cardBodyEl.appendChild(formContainerEl);
+        cardEl.appendChild(cardBodyEl);
+
+        appContainer.appendChild(cardEl);
+    }
+
+    const displayHighScores = () => {
+        let highScores = highScores.getScores();
+
+        let 
+    }
+
     return {
         createQuestionCard,
         displayStartScreen,
+        displayEndScreen,
     }
 
 })();
@@ -224,6 +296,8 @@ const quiz = (() => {
     const start = () => {
         timer.start();
         userScore = 0;
+        currentQuestion = 0;
+        questionNum = 1;
 
         quizContinue = setInterval(() => {
             if (!timer.isTimeLeft() || currentQuestion == questions.length) {
@@ -236,12 +310,12 @@ const quiz = (() => {
     };
 
     const stop = () => {
-        debugger;
         timer.stop();
         clearInterval(quizContinue);
         currentQuestion = 0;
         questionNum = 1;
         appContainer.lastChild.remove();
+        domOps.displayEndScreen(quiz.getUserScore())
     }
 
     const isLastQuestion = () => {
@@ -322,6 +396,5 @@ const highScores = (() => {
 
 })();
 
-// quiz.setQuestions(questions);
-// quiz.start();
+quiz.setQuestions(questions);
 domOps.displayStartScreen();

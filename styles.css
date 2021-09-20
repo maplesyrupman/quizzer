@@ -2,6 +2,7 @@
     display: inline-block;
     min-width: 80%;
     min-height: 80vh;
+    padding: 1rem;
 }
 
 .card-header {
@@ -19,4 +20,17 @@
     display: flex;
     flex-direction: column;
     gap: .3rem;
+}
+
+.initialsFormDiv {
+    display: flex;
+    justify-content: center;
+}
+
+.saveScoreForm {
+    margin-top: 5%;
+}
+
+.card {
+    border: none;
 }
